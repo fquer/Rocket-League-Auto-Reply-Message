@@ -1,4 +1,4 @@
-# Rocket League Auto Reply Message
+# Rocket League Garage Auto Reply Message
 
 This script auto reply your messagess.
 
