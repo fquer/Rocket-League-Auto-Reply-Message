@@ -3,7 +3,7 @@ import os
 from proto import MESSAGE
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from time import sleep
+from time import sleep, time
 
 abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
@@ -13,6 +13,7 @@ os.chdir(dname)
 EMAIL = ''
 PASSWORD = ''
 MESSAGE = 'This is auto message. If you okay with prices directly add me. Im not checking chat messages.'
+REFRESH_TIMEOUT = 180
 
 def init():
     
@@ -31,7 +32,7 @@ def init():
     source = BeautifulSoup(driver.page_source,"lxml")
 
     sleep(1)
-    
+    tempTime = time()
     while True:
         sleep(1)
         source = BeautifulSoup(driver.page_source,"lxml")
@@ -48,6 +49,10 @@ def init():
             sleep(0.5)
             driver.find_element_by_id('messagetext').send_keys(MESSAGE)
             driver.find_element_by_id('user-message-send-reply').click()
+
+        if time() - tempTime > REFRESH_TIMEOUT:
+            driver.refresh()
+            tempTime = time()
             
 if __name__ == '__main__':
     init()
