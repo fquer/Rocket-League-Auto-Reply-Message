@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup
 import os
-from proto import MESSAGE
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.firefox.service import Service
 from time import sleep, time
 
 abspath = os.path.abspath(__file__)
@@ -19,14 +19,14 @@ def init():
     
     firefox_options = FirefoxOptions()
     firefox_options.headless = True
-    driver = webdriver.Firefox(options=firefox_options, executable_path='geckodriver.exe')
+    driver = webdriver.Firefox(options=firefox_options, service=Service(executable_path='geckodriver.exe'))
     driver.set_window_size(2620, 1080)
 
     driver.get("https://rocket-league.com/login")
-    driver.find_element_by_id("acceptPrivacyPolicy").click()
-    driver.find_element_by_name("email").send_keys(EMAIL)
-    driver.find_element_by_name("password").send_keys(PASSWORD)
-    driver.find_element_by_name("submit").click()
+    driver.find_element("id", "acceptPrivacyPolicy").click()
+    driver.find_element("name", "email").send_keys(EMAIL)
+    driver.find_element("name", "password").send_keys(PASSWORD)
+    driver.find_element("name", "submit").click()
 
     driver.get("https://rocket-league.com/chat")
     source = BeautifulSoup(driver.page_source,"lxml")
@@ -43,12 +43,12 @@ def init():
             messageSource = BeautifulSoup(newMessage,"html.parser")
             userName = messageSource.find('img')['alt']
             print('New message from ', userName)
-            driver.find_element_by_id('message-thread-' + userName).click()
+            driver.find_element("id", 'message-thread-' + userName).click()
             sleep(1)
             driver.execute_script("window.scrollTo(0, 300)")
             sleep(0.5)
-            driver.find_element_by_id('messagetext').send_keys(MESSAGE)
-            driver.find_element_by_id('user-message-send-reply').click()
+            driver.find_element("id", 'messagetext').send_keys(MESSAGE)
+            driver.find_element("id", 'user-message-send-reply').click()
 
         if time() - tempTime > REFRESH_TIMEOUT:
             driver.refresh()
