@@ -16,7 +16,7 @@ MESSAGE = 'This is auto message. If you okay with prices directly add me. Im not
 REFRESH_TIMEOUT = 180
 
 def init():
-    
+    print('Loading driver...')
     firefox_options = FirefoxOptions()
     firefox_options.headless = True
     driver = webdriver.Firefox(options=firefox_options, service=Service(executable_path='geckodriver.exe'))
@@ -24,13 +24,14 @@ def init():
 
     driver.get("https://rocket-league.com/login")
     driver.find_element("id", "acceptPrivacyPolicy").click()
+    print('Logging in...')
     driver.find_element("name", "email").send_keys(EMAIL)
     driver.find_element("name", "password").send_keys(PASSWORD)
     driver.find_element("name", "submit").click()
 
     driver.get("https://rocket-league.com/chat")
     source = BeautifulSoup(driver.page_source,"lxml")
-
+    print('Script is ready! Waiting for messages...')
     sleep(1)
     tempTime = time()
     while True:
